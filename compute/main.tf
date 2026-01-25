@@ -120,6 +120,28 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+resource "aws_lb_target_group" "nodejs_tg" {
+  name     = "${var.project_name}-nodejs-tg"
+  port     = 3000
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
+
+  health_check {
+    path                = "/app2"
+    protocol            = "HTTP"
+    matcher             = "200-399"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
+  }
+
+  tags = {
+    Name = "${var.project_name}-nodejs-tg"
+  }
+}
+
+
 resource "aws_lb_listener_rule" "app1_rule" {
   listener_arn = aws_lb_listener.http.arn
   priority     = 10
@@ -152,19 +174,94 @@ resource "aws_lb_listener_rule" "app2_rule" {
   }
 }
 
-# Launch template for app1
+resource "aws_lb_listener_rule" "app2_node_rule" {
+  listener_arn = aws_lb_listener.http.arn
+  priority     = 30
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.nodejs_tg.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/app2*"]
+    }
+  }
+}
+
+
+resource "aws_iam_role" "ec2_role" {
+  name = "ec2-ssm-cloudwatch-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "ec2-ssm-cloudwatch-profile"
+  role = aws_iam_role.ec2_role.name
+}
+
+
+
 resource "aws_launch_template" "app1_lt" {
   name_prefix   = "app1-lt-"
-  image_id      = "ami-024ee5112d03921e2" # Amazon Linux 2
+  image_id      = "ami-024ee5112d03921e2"
   instance_type = "t3.micro"
 
   vpc_security_group_ids = [aws_security_group.app_sg.id]
 
-user_data = base64encode(<<-EOF
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ec2_profile.name
+  }
+
+  user_data = base64encode(<<-EOF
 #!/bin/bash
 yum update -y
-yum install -y httpd
+yum install -y httpd amazon-cloudwatch-agent
 
+# Start SSM Agent (already installed on AL2)
+systemctl enable amazon-ssm-agent
+systemctl start amazon-ssm-agent
+
+# CloudWatch Agent config
+cat <<CWCONFIG > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+{
+  "metrics": {
+    "append_dimensions": {
+    "InstanceId": "$${aws:InstanceId}"
+},
+    "metrics_collected": {
+      "mem": { "measurement": ["mem_used_percent"] },
+      "cpu": { "measurement": ["cpu_usage_idle"] }
+    }
+  }
+}
+CWCONFIG
+
+systemctl enable amazon-cloudwatch-agent
+systemctl start amazon-cloudwatch-agent
+
+# APP1 content
 mkdir -p /var/www/html/app1
 echo "Welcome to Maria's APP1 🚀" > /var/www/html/app1/index.html
 
@@ -177,14 +274,10 @@ EOT
 
 systemctl enable httpd
 systemctl restart httpd
-
 EOF
-)
-
+  )
 }
 
-
-# Launch template for app2
 resource "aws_launch_template" "app2_lt" {
   name_prefix   = "app2-lt-"
   image_id      = "ami-024ee5112d03921e2"
@@ -192,12 +285,38 @@ resource "aws_launch_template" "app2_lt" {
 
   vpc_security_group_ids = [aws_security_group.app_sg.id]
 
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ec2_profile.name
+  }
 
-user_data = base64encode(<<-EOF
+  user_data = base64encode(<<-EOF
 #!/bin/bash
 yum update -y
-yum install -y httpd
+yum install -y httpd amazon-cloudwatch-agent
 
+# Start SSM Agent
+systemctl enable amazon-ssm-agent
+systemctl start amazon-ssm-agent
+
+# CloudWatch Agent config
+cat <<CWCONFIG > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+{
+  "metrics": {
+    "append_dimensions": {
+    "InstanceId": "$${aws:InstanceId}"
+},
+    "metrics_collected": {
+      "mem": { "measurement": ["mem_used_percent"] },
+      "cpu": { "measurement": ["cpu_usage_idle"] }
+    }
+  }
+}
+CWCONFIG
+
+systemctl enable amazon-cloudwatch-agent
+systemctl start amazon-cloudwatch-agent
+
+# APP2 content
 mkdir -p /var/www/html/app2
 echo "Welcome to Maria's APP2 ⚡" > /var/www/html/app2/index.html
 
@@ -210,11 +329,10 @@ EOT
 
 systemctl enable httpd
 systemctl restart httpd
-
 EOF
-)
-
+  )
 }
+
 
 
 # ASG for app1
