@@ -1,88 +1,65 @@
-############################
-# General Variables
-############################
-
 variable "project_name" {
-  description = "Name prefix for all resources"
+  description = "Project name prefix"
   type        = string
-  default     = "3tier-app"
 }
 
-variable "environment" {
-  description = "Environment name (dev/stage/prod)"
+variable "vpc_id" {
+  description = "VPC ID"
   type        = string
-  default     = "dev"
 }
 
-############################
-# EC2 / Launch Template
-############################
+variable "public_subnets" {
+  description = "Public subnet IDs"
+  type        = list(string)
+}
 
-variable "ami_id" {
-  description = "AMI ID for EC2 instances"
-  type        = string
-  default     = "ami-08d7aabbb50c2c24e" # Amazon Linux 2
+variable "private_subnets" {
+  description = "Private subnet IDs"
+  type        = list(string)
 }
 
 variable "instance_type" {
   description = "EC2 instance type"
   type        = string
-  default     = "t3.micro"
 }
 
-variable "user_data_file" {
-  description = "Path to user data script"
+variable "ami_id" {
+  description = "AMI ID"
   type        = string
-  default     = "compute/user-data.sh"
 }
 
-############################
-# Auto Scaling Group
-############################
-
-variable "desired_capacity" {
-  description = "Desired number of EC2 instances"
+variable "desired_capacity_app1" {
+  description = "ASG desired capacity for app1"
   type        = number
   default     = 2
 }
 
-variable "min_size" {
-  description = "Minimum number of EC2 instances"
+variable "min_size_app1" {
+  description = "ASG min size for app1"
   type        = number
   default     = 1
 }
 
-variable "max_size" {
-  description = "Maximum number of EC2 instances"
+variable "max_size_app1" {
+  description = "ASG max size for app1"
   type        = number
   default     = 3
 }
 
-############################
-# Networking Inputs
-############################
-
-variable "public_subnets" {
-  description = "List of public subnet IDs for ALB"
-  type        = list(string)
-}
-
-variable "private_app_subnets" {
-  description = "List of private app subnet IDs for ASG"
-  type        = list(string)
-}
-
-variable "vpc_id" {
-  description = "VPC ID where resources will be created"
-  type        = string
-}
-
-############################
-# Ports
-############################
-
-variable "app_port" {
-  description = "Application port for EC2 and ALB"
+variable "desired_capacity_app2" {
+  description = "ASG desired capacity for app2"
   type        = number
-  default     = 80
+  default     = 2
+}
+
+variable "min_size_app2" {
+  description = "ASG min size for app2"
+  type        = number
+  default     = 1
+}
+
+variable "max_size_app2" {
+  description = "ASG max size for app2"
+  type        = number
+  default     = 3
 }

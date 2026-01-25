@@ -1,17 +1,15 @@
-# -------------------------
-# Day‑1 VPC Module
-# -------------------------
 module "vpc" {
-  source = "./vpc"
+  source       = "./vpc"
+  project_name = var.project_name
 }
 
-# -------------------------
-# Day‑2 Compute Module
-# -------------------------
 module "compute" {
-  source = "./compute"
-
-  vpc_id              = module.vpc.vpc_id
-  public_subnets      = module.vpc.public_subnets
-  private_app_subnets = module.vpc.private_app_subnets
+  source           = "./compute"
+  project_name     = var.project_name
+  vpc_id           = module.vpc.vpc_id
+  public_subnets   = module.vpc.public_subnets
+  private_subnets  = module.vpc.private_subnets
+  instance_type    = var.instance_type
+  ami_id           = var.ami_id
+  
 }
