@@ -1,71 +1,27 @@
-# ----------------------------------------
-# Terraform
-# ----------------------------------------
-# Local .terraform directories
-**/.terraform/*
-
-# Terraform state files
+# Terraform state
 *.tfstate
 *.tfstate.*
-
-# Crash logs
 crash.log
 crash.*.log
 
-# Exclude override files
+# Terraform directories
+.terraform/
+.terraform.lock.hcl
+
+# Sensitive variable files
+*.tfvars
+*.tfvars.json
+
+# Local environment overrides
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
 
-# Terraform variable files (sensitive)
-*.tfvars
-*.tfvars.json
-
-# Terraform plan output
-plan.out
-
-# ----------------------------------------
-# AWS Credentials
-# ----------------------------------------
-# Never commit AWS credentials
-.aws/
-credentials
-config
-
-# ----------------------------------------
-# IDE / Editor Files
-# ----------------------------------------
-# VS Code
+# IDE / Editor files
 .vscode/
-
-# IntelliJ / JetBrains
 .idea/
-
-# MacOS
 .DS_Store
 
-# Windows
-Thumbs.db
-
-# ----------------------------------------
-# Python / Node (if used for Lambda)
-# ----------------------------------------
-# Python
-__pycache__/
-*.pyc
-
-# Node
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# ----------------------------------------
 # Logs
-# ----------------------------------------
 *.log
-
-# ----------------------------------------
-# Zip files (Lambda packages)
-# ----------------------------------------
-*.zip
