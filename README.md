@@ -4,7 +4,7 @@ This project demonstrates a complete **production‑style 3‑tier architecture*
 
 # **Architecture Overview**
 
-## ** Tier‑1: Networking Layer (Day‑1)**
+## Tier‑1: Networking Layer (Day‑1)
 
 Built the foundational AWS network using Terraform:
 
@@ -17,7 +17,7 @@ Built the foundational AWS network using Terraform:
 
 **Outcome:** A secure, multi‑AZ network foundation for all application layers.
 
-## ** Tier‑2: Compute Layer (Day‑2)**
+## Tier‑2: Compute Layer (Day‑2)
 
 Provisioned the full compute stack:
 
@@ -33,15 +33,15 @@ Provisioned the full compute stack:
 
 **Outcome:** Highly available, scalable, secure compute layer.
 
-##### Application Validation
+### Application Validation:
 
-Successfully deployed App1 and App2 with ALB path-based routing, custom welcome pages.
+Successfully deployed App1 and App2 using ALB path‑based routing, each serving custom frontend welcome pages.
 
 ![alt text](image-2.png)
 
 ![alt text](image-3.png)
 
-##### Instance Connection via SSM Session Manager
+### Instance Connection via SSM Session Manager:
 
 This screenshot confirms that the EC2 instance is running the Apache HTTP Server, serving content from /var/www/html/app1, /var/www/html/app2 and is securely accessed using SSM Session Manager.
 It also shows that the SSM Agent is active, while the CloudWatch Agent is installed but not yet running, providing visibility into system-level service health and monitoring setup.
@@ -50,7 +50,7 @@ It also shows that the SSM Agent is active, while the CloudWatch Agent is instal
 
 ![alt text](image-7.png)
 
-## ** Tier‑3: Database Layer (Day‑3)**
+##  Tier‑3: Database Layer (Day‑3)
 
 Configured a secure MySQL database:
 
@@ -63,12 +63,13 @@ Configured a secure MySQL database:
 
 **Outcome:** A secure, private, production‑ready database layer.
 
+### Database Connection from EC2 via SSM Session Manager:
 
 This image illustrates how the EC2 instance connects to the RDS database securely using SSM Session Manager.
 
 ![alt text](image-4.png)
 
-## ** Application Layer Integration (Day‑4)**
+##  Application Layer Integration (Day‑4)
 
 Deployed and validated the backend application:
 
@@ -81,13 +82,13 @@ Deployed and validated the backend application:
 
 **Outcome:** Fully functional application tier integrated with ALB and RDS.
 
-##### App2 Backend Validation — ALB Path /app2
+### App2 Backend Validation — ALB Path /app2:
 
 Successfully retrieved structured JSON data from the Node.js backend via ALB path /app2, confirming EC2 → RDS connectivity.
 
 ![alt text](image-5.png)
 
-## ** CI/CD Pipeline Automation (Day‑5)**
+##  CI/CD Pipeline Automation (Day‑5)
 
 Built a zero‑touch deployment pipeline:
 
@@ -99,7 +100,7 @@ Built a zero‑touch deployment pipeline:
 
 **Outcome:** Production‑style CI/CD pipeline delivering automated deployments into private EC2 instances.
 
-##### CI/CD Workflow: Node.js App2 Deployment via GitHub Actions
+### CI/CD Workflow: Node.js App2 Deployment via GitHub Actions:
 
 This screenshot confirms successful deployment of app2 using a fully automated CI/CD pipeline.
 The workflow includes code checkout, AWS credential configuration, project packaging, S3 upload, and remote deployment via SSM Run Command, ensuring zero manual intervention and secure delivery to EC2.
