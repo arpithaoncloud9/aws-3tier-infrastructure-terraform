@@ -37,18 +37,20 @@ Provisioned the full compute stack:
 
 Successfully deployed App1 and App2 using ALB path‑based routing, each serving custom frontend welcome pages.
 
-![alt text](image-2.png)
+<img width="1452" height="472" alt="image" src="https://github.com/user-attachments/assets/ad5629e7-c8eb-4dce-a147-671258e3a9e6" />
 
-![alt text](image-3.png)
+<img width="1520" height="472" alt="image" src="https://github.com/user-attachments/assets/8f46963f-6a71-42a8-bf55-e356ca417a42" />
+
 
 ### Instance Connection via SSM Session Manager:
 
 This screenshot confirms that the EC2 instance is running the Apache HTTP Server, serving content from /var/www/html/app1, /var/www/html/app2 and is securely accessed using SSM Session Manager.
 It also shows that the SSM Agent is active, while the CloudWatch Agent is installed but not yet running, providing visibility into system-level service health and monitoring setup.
 
-![alt text](image-6.png) 
+<img width="1082" height="690" alt="Screenshot 2026-01-25 at 11 34 39 PM" src="https://github.com/user-attachments/assets/c1def5f9-1947-4683-9030-edec9108a151" />
 
-![alt text](image-7.png)
+<img width="1078" height="682" alt="Screenshot 2026-01-25 at 11 37 08 PM" src="https://github.com/user-attachments/assets/d99ebe7c-9e8f-4a45-aa42-3c115855fe24" />
+
 
 ##  Tier‑3: Database Layer (Day‑3)
 
@@ -67,7 +69,8 @@ Configured a secure MySQL database:
 
 This image illustrates how the EC2 instance connects to the RDS database securely using SSM Session Manager.
 
-![alt text](image-4.png)
+<img width="792" height="837" alt="SSM-rds-connection" src="https://github.com/user-attachments/assets/3b350946-d21b-4d54-8d17-575dbc687de8" />
+
 
 ##  Application Layer Integration (Day‑4)
 
@@ -86,7 +89,8 @@ Deployed and validated the backend application:
 
 Successfully retrieved structured JSON data from the Node.js backend via ALB path /app2, confirming EC2 → RDS connectivity.
 
-![alt text](image-5.png)
+<img width="1135" height="213" alt="alb-rds-json" src="https://github.com/user-attachments/assets/f53cbc9a-800c-4e90-8338-d8488e9114f1" />
+
 
 ##  CI/CD Pipeline Automation (Day‑5)
 
@@ -105,7 +109,8 @@ Built a zero‑touch deployment pipeline:
 This screenshot confirms successful deployment of app2 using a fully automated CI/CD pipeline.
 The workflow includes code checkout, AWS credential configuration, project packaging, S3 upload, and remote deployment via SSM Run Command, ensuring zero manual intervention and secure delivery to EC2.
 
-![alt text](image-8.png)
+<img width="1458" height="790" alt="github_cicd_3-tier" src="https://github.com/user-attachments/assets/ad6a2dce-9bdd-483c-bff5-b99e04b6e912" />
+
 
 ##  **End‑to‑End Flow**
 
