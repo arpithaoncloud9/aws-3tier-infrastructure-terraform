@@ -17,6 +17,9 @@ Built the foundational AWS network using Terraform:
 
 **Outcome:** A secure, multi‑AZ network foundation for all application layers.
 
+<img width="1940" height="3172" alt="image" src="https://github.com/user-attachments/assets/634e0285-4cb5-4ed1-a547-8b0f363aff2d" />
+
+
 ## Tier‑2: Compute Layer (Day‑2)
 
 Provisioned the full compute stack:
